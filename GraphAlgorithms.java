@@ -94,13 +94,19 @@ class Graph {
         Arrays.fill(distances, Integer.MAX_VALUE);
         distances[startVertex] = 0;
 
+        boolean[] visited = new boolean[vertices];
+
         PriorityQueue<Edge> pq = new PriorityQueue<>(Comparator.comparingInt(e -> e.weight));
         pq.add(new Edge(startVertex, startVertex, 0));
 
         while (!pq.isEmpty()) {
             Edge edge = pq.poll();
             int vertex = edge.destination;
+            
+            if (visited[edge.source])
+                continue;
 
+            visited[edge.source] = true;
             for (Edge neighbor : adjList.get(vertex)) {
                 int newDist = distances[vertex] + neighbor.weight;
                 if (newDist < distances[neighbor.destination]) {
@@ -144,31 +150,26 @@ class Graph {
 // Main sınıfı
 public class GraphAlgorithms {
     public static void main(String[] args) {
-        Graph graph = new Graph(6); // Graf, 6 düğümle tanımlandı.
+        Graph graph = new Graph(3); // Graf, 6 düğümle tanımlandı.
 
         // Kenarları ekleme
-        graph.addEdge(1, 0, 2);
-        graph.addEdge(1, 4, 4);
-        graph.addEdge(1, 3, 2);
-        graph.addEdge(4, 3, 3);
-        graph.addEdge(4, 1, 5);
-        graph.addEdge(3, 0, -6);
-        graph.addEdge(3, 2, 5);
-        graph.addEdge(0, 2, 2);
-        graph.addEdge(5, 2, 2);
+        graph.addEdge(0, 1, 3);
+        graph.addEdge(0, 2, 5);
+        graph.addEdge(2, 1, -3);
+
 
         // BFS ile graf taraması
-        graph.bfs(1);
+        graph.bfs(0);
 
         // Döngü algılama
         graph.detectCycle();
 
         // Hatalı Dijkstra
         System.out.println("Running Dijkstra (with possible errors due to negative weights):");
-        graph.dijkstra(1);
+        graph.dijkstra(0);
 
         // Doğru Bellman-Ford
         System.out.println("\nRunning Bellman-Ford (correct algorithm for graphs with negative weights):");
-        graph.bellmanFord(1);
+        graph.bellmanFord(0);
     }
 }
